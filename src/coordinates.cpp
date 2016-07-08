@@ -3,8 +3,24 @@
 struct LatpLon {
 	int32_t latp;
 	int32_t lon;
+
+public:
+	bool operator==(const LatpLon &ll) const {
+		return (this->latp == ll.latp && this->lon == ll.lon);
+	}
+
+	bool operator!=(const LatpLon &ll) const {
+		return !(*this == ll);
+	}
 };
 
+static int64_t sqDist(LatpLon ll1, LatpLon ll2) {
+	int64_t latp1 = ll1.latp, lon1 = ll1.lon, latp2 = ll2.latp, lon2 = ll2.lon;
+	int64_t dist = (latp2 - latp1) * (latp2 - latp1) + (lon2 - lon1) * (lon2 - lon1);
+	return dist;
+}
+
+// Helper for angles
 double deg2rad(double deg) { return (M_PI/180.0) * deg; }
 double rad2deg(double rad) { return (180.0/M_PI) * rad; }
 

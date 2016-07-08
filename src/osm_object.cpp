@@ -36,6 +36,7 @@ class OSMObject { public:
 	bool linestringInited;
 	Polygon polygonCache;
 	bool polygonInited;
+	WayVec multiPolygonRelationCache;
 	MultiPolygon multiPolygonCache;
 	bool multiPolygonInited;
 
@@ -343,7 +344,8 @@ class OSMObject { public:
 	const MultiPolygon &multiPolygon() {
 		if (!multiPolygonInited) {
 			multiPolygonInited = true;
-			multiPolygonCache = osmStore->wayListMultiPolygon(*outerWayVec, *innerWayVec);
+			multiPolygonRelationCache = osmStore->correctMultiPolygonRelation(*outerWayVec, *innerWayVec);
+			multiPolygonCache = osmStore->wayListMultiPolygon(multiPolygonRelationCache);
 		}
 		return multiPolygonCache;
 	}

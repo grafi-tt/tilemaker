@@ -543,7 +543,12 @@ int main(int argc, char* argv[]) {
 							if (!osmObject.empty()) {
 								WayID relID = osmObject.osmID;
 								// Store the relation members in the global relation store
-								relations.insert_front(relID, outerWayVec, innerWayVec);
+								if (osmObject.multiPolygonInited) {
+									relations.insert_front(relID, osmObject.multiPolygonRelationCache);
+								} else {
+									relations.insert_front(relID,
+											osmStore.correctMultiPolygonRelation(outerWayVec, innerWayVec));
+								}
 								// Store this relation in the way->relations map to oblige each way in the relation
                                 // to output it, even if the way is not rendered in its own right.
 								for (auto it = outerWayVec.cbegin(); it != outerWayVec.cend(); ++it) {
@@ -784,10 +789,7 @@ int main(int argc, char* argv[]) {
 									cerr << "Exception when writing output object " << jt->objectID << " of type " << jt->geomType << endl;
 									if (relations.count(jt->objectID)) {
 										const auto &wayList = relations.at(jt->objectID);
-										for (auto et = wayList.outerBegin; et != wayList.outerEnd; ++et) {
-											if (ways.count(*et)==0) { cerr << " - couldn't find constituent way " << *et << endl; }
-										}
-										for (auto et = wayList.innerBegin; et != wayList.innerEnd; ++et) {
+										for (auto et = wayList.begin; et != wayList.end; ++et) {
 											if (ways.count(*et)==0) { cerr << " - couldn't find constituent way " << *et << endl; }
 										}
 									}
