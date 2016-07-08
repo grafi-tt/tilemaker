@@ -72,9 +72,11 @@ WayList<WayVec::const_iterator> makeWayList(const WayVec &wayVec) {
 // Internal data structures.
 //
 
+#include <indexed_array.cpp>
+
 // node store
 class NodeStore {
-	std::unordered_map<NodeID, LatpLon> mLatpLons;
+	KeyValArrays<NodeID, LatpLon> mLatpLons;
 
 public:
 	// @brief Lookup a latp/lon pair
@@ -99,7 +101,7 @@ public:
 	// @invariant The OSM ID i must be larger than previously inserted OSM IDs of nodes
 	//            (though unnecessarily for current impl, future impl may impose that)
 	void insert_back(NodeID i, LatpLon coord) {
-		mLatpLons.emplace(i, coord);
+		mLatpLons.insert_back(i, coord);
 	}
 
 	// @brief Make the store empty
@@ -112,7 +114,7 @@ public:
 typedef vector<NodeID>::const_iterator WayStoreIterator;
 
 class WayStore {
-	std::unordered_map<WayID, const vector<NodeID>> mNodeLists;
+	IndexedKeyValArrays<WayID, NodeID> mNodeLists;
 
 public:
 	// @brief Lookup a node list
@@ -120,8 +122,8 @@ public:
 	// @return A node list
 	// @exception NotFound
 	NodeList<WayStoreIterator> at(WayID i) const {
-		const auto &way = mNodeLists.at(i);
-		return { way.cbegin(), way.cend() };
+		auto pa = mNodeLists.at(i);
+		return { pa.first, pa.second };
 	}
 
 	// @brief Return whether a node list is on the store.
@@ -138,7 +140,7 @@ public:
 	// @invariant The OSM ID i must be larger than previously inserted OSM IDs of ways
 	//            (though unnecessarily for current impl, future impl may impose that)
 	void insert_back(int i, const NodeVec &nodeVec) {
-		mNodeLists.emplace(i, nodeVec);
+		mNodeLists.insert_back(i, nodeVec);
 	}
 
 	// @brief Make the store empty
@@ -151,7 +153,7 @@ public:
 typedef vector<WayID>::const_iterator RelationStoreIterator;
 
 class RelationStore {
-	std::unordered_map<WayID, const vector<WayID>> mWayLists;
+	IndexedKeyValArrays<WayID, WayID> mWayLists;
 
 public:
 	// @brief Lookup a way list
@@ -159,8 +161,8 @@ public:
 	// @return A way list
 	// @exception NotFound
 	WayList<RelationStoreIterator> at(WayID i) const {
-		const auto &wayList = mWayLists.at(i);
-		return { wayList.cbegin(), wayList.cend() };
+		auto pa = mWayLists.at(i);
+		return { pa.first, pa.second };
 	}
 
 	// @brief Return whether a way list is on the store.
@@ -178,7 +180,7 @@ public:
 	// @invariant The OSM ID i must be larger than previously inserted OSM IDs of relations
 	//            (though unnecessarily for current impl, future impl may impose that)
 	void insert_back(WayID i, const WayVec &wayVec) {
-		mWayLists.emplace(i, wayVec);
+		mWayLists.insert_back(i, wayVec);
 	}
 
 	// @brief Make the store empty
