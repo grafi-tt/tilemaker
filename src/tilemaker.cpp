@@ -491,6 +491,7 @@ int main(int argc, char* argv[]) {
 							// Assemble nodelist
 							nodeId = 0;
 							NodeVec nodeVec;
+							nodeVec.reserve(pbfWay.refs_size());
 							for (k = 0; k < pbfWay.refs_size(); k++) {
 								nodeId += pbfWay.refs(k);
 								nodeVec.push_back(static_cast<NodeID>(nodeId));
@@ -522,6 +523,7 @@ int main(int argc, char* argv[]) {
 
 							// Read relation members
 							WayVec outerWayVec, innerWayVec;
+							outerWayVec.reserve(pbfRelation.memids_size());
 							int64_t lastID = 0;
 							for (uint n=0; n < pbfRelation.memids_size(); n++) {
 								lastID += pbfRelation.memids(n);
@@ -582,6 +584,7 @@ int main(int argc, char* argv[]) {
 						// Assemble nodelist
 						nodeId = 0;
 						NodeVec nodeVec;
+						nodeVec.reserve(pbfWay.refs_size());
 						for (k=0; k<pbfWay.refs_size(); k++) {
 							nodeId += pbfWay.refs(k);
 							nodeVec.push_back(static_cast<NodeID>(nodeId));
