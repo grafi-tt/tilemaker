@@ -175,9 +175,9 @@ public:
 	// @param i Pseudo OSM ID of a relation
 	// @param outerWayVec A outer way vector to be inserted
 	// @param innerWayVec A inner way vector to be inserted
-	// @invariant The pseudo OSM ID i must be smaller than previously inserted pseudo OSM IDs of relations
+	// @invariant The OSM ID i must be larger than previously inserted OSM IDs of relations
 	//            (though unnecessarily for current impl, future impl may impose that)
-	void insert_front(WayID i, const WayVec &wayVec) {
+	void insert_back(WayID i, const WayVec &wayVec) {
 		mWayLists.emplace(i, wayVec);
 	}
 

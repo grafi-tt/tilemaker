@@ -25,7 +25,6 @@ class OSMObject { public:
 	OSMStore *osmStore;						// Global OSM store
 
 	uint64_t osmID;							// ID of OSM object
-	uint32_t newWayID = MAX_WAY_ID;			// Decrementing new ID for relations
 	bool isWay, isRelation;					// Way, node, relation?
 
 	int32_t lon1,latp1,lon2,latp2;			// Start/end co-ordinates of OSM object
@@ -165,7 +164,7 @@ class OSMObject { public:
 	//  we use decrementing positive IDs to give a bit more space for way IDs)
 	inline void setRelation(Relation *relation, WayVec *outerWayVecPtr, WayVec *innerWayVecPtr) {
 		reset();
-		osmID = --newWayID;
+		osmID = relation->id();
 		isWay = true;
 		isRelation = true;
 

@@ -541,12 +541,12 @@ int main(int argc, char* argv[]) {
 								return -1;
 							}
 							if (!osmObject.empty()) {
-								WayID relID = osmObject.osmID;
+								WayID relID = pbfRelation.id();
 								// Store the relation members in the global relation store
 								if (osmObject.multiPolygonInited) {
-									relations.insert_front(relID, osmObject.multiPolygonRelationCache);
+									relations.insert_back(relID, osmObject.multiPolygonRelationCache);
 								} else {
-									relations.insert_front(relID,
+									relations.insert_back(relID,
 											osmStore.correctMultiPolygonRelation(outerWayVec, innerWayVec));
 								}
 								// Store this relation in the way->relations map to oblige each way in the relation
